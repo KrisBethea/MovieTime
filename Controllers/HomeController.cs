@@ -21,8 +21,7 @@ namespace MovieTime.Controllers
         {
            var model = GetFilms();
             // return  model == null ? null : View(model);
-            _logger.LogInformation("Info Log from Conntroller");
-            _logger.LogWarning("Warning Log from Controller");
+     
          
     
             if (model == null)

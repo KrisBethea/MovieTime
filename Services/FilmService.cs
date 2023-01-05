@@ -13,9 +13,16 @@ namespace Services
 
     public class FilmService : IFilmService
     {
+        private ILogger<FilmService> _logger;
+
+        public FilmService(ILogger<FilmService> logger)
+        {
+            this._logger = logger;
+        }
+
         public IEnumerable<Films> GetFilms()
         {
-
+            
             var client = new RestClient("https://5.formovietickets.com:2255/Data.ASP");
             client.Authenticator = new HttpBasicAuthenticator("test", "test");
 
@@ -36,9 +43,10 @@ namespace Services
             request.AddParameter("application/xml", body, ParameterType.RequestBody);
             client.UseXmlSerializer();
             RestResponse response = client.Execute(request);
-
             
+           
 
+            _logger.LogError("Response Status Code: " + response.StatusCode.ToString());
 
             var dotNetXmlDeserializer = new DotNetXmlDeserializer(); //RestSharp.RestXmlRequest(); //   Deserializers.DotNetXmlDeserializer();
             dotNetXmlDeserializer.RootElement = "Response";
