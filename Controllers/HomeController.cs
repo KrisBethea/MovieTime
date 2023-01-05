@@ -20,7 +20,10 @@ namespace MovieTime.Controllers
         public IActionResult Index()
         {
            var model = GetFilms();
-            return  model == null ? null : View(model);
+            // return  model == null ? null : View(model);
+            if (model == null)
+                return Content("model is not availble");
+            return View(model);
             //return View();
         }
 
@@ -37,10 +40,10 @@ namespace MovieTime.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        //public IActionResult Error()
+        //{
+        //    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        //}
     }
 }

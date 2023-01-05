@@ -1,0 +1,213 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    ViewData["Title"] = "Tickets";
+}
+
+
+
+   
+ 
+    <style type="text/css">
+        /* This styling can be edited as needed */
+        /*
+              This example page sets the visibility of the form to hidden, and then on a successful init of the script changes it to visible.
+              You can handle this whichever way you prefer.
+            */
+
+        body {
+            height: 750px;
+        }
+
+        #payment-form {
+            box-sizing: content-box;
+            width: 360px;
+            margin: 60px auto 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #fff;
+            box-shadow: 1px 2px 3px 0 rgba(0, 0, 0, .10);
+            visibility: hidden;
+        }
+
+        .cc-form-header {
+            height: 40px;
+            padding: 25px 25px 0;
+            border-bottom: 1px solid #e1e8ee;
+            text-align: center;
+        }
+
+        .cc-form-accepted-cards {
+            text-align: center;
+        }
+
+            .cc-form-accepted-cards > img {
+                padding: 10px 0;
+                height: 30px;
+            }
+
+        .cc-form-body {
+            height: 340px;
+            padding: 30px 30px 20px;
+        }
+
+        .cc-form-label {
+            display: inline-block;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .cc-form-input {
+            width: 100%;
+            margin: 5px 0 15px 0;
+        }
+
+        .title {
+            font-size: 18px;
+            margin: 0;
+            color: #5e6977;
+        }
+
+        #credit-card-submit {
+            margin-top: 20px;
+        }
+    </style>
+    <h1> RTS/Heartland Secure Payment Example</h1>
+    <!--
+      This form can be changed as needed, this is just an example!
+
+      The important part is that the div ids for the card number, expiration date, cvv, and submit
+        match the fields specified in the GlobalPayments.configure() call. So that the script knows
+        which divs to attach the secure iframe fields to.
+    -->
+    <!--
+      The action on the form will be a URL on your web server.
+      This will take the response data from the processor, bundle it up into your buy request <Payment> node
+        and submit to the RTS server for validation / processing of the sale.
+    -->
+    <form method="POST" action="" id="payment-form">
+        <div class="cc-form-header">
+            <h4 class="title">Credit Card Information</h4>
+        </div>
+        <div class="cc-form-accepted-cards">
+            <!--
+              These are sample image URLs for the purpose of this example only.
+              Do not use these for production applications!
+            -->
+            <img src="https://5.formovietickets.com:2245/T.asp?WCI=BT&amp;Page=IMAGE&amp;ImageName=VISA" alt="Visa Logo">
+            <img src="https://5.formovietickets.com:2245/T.asp?WCI=BT&amp;Page=IMAGE&amp;ImageName=MASTERCARD"
+                 alt="MasterCard Logo">
+            <img src="https://5.formovietickets.com:2245/T.asp?WCI=BT&amp;Page=IMAGE&amp;ImageName=DISCOVER"
+                 alt="Discover Logo">
+            <img src="https://5.formovietickets.com:2245/T.asp?WCI=BT&amp;Page=IMAGE&amp;ImageName=AMEX"
+                 alt="American Express Logo">
+        </div>
+        <div class="cc-form-body">
+            <label class="cc-form-label" for="billing-street">Billing Street Address</label>
+            <input class="cc-form-input" id="billing-street" name="billingStreet" type="text" placeholder="1234 Sample Road">
+            <br>
+            <label class="cc-form-label" for="billing-zip">Billing Zip/Postal Code</label>
+            <input class="cc-form-input" id="billing-zip" name="billingZip" type="text" placeholder="Zip or Postal Code">
+            <br>
+            <label class="cc-form-label" for="credit-card-card-number">Card Number</label>
+            <div class="cc-form-input" id="credit-card-card-number"></div>
+            <label class="cc-form-label" for="credit-card-card-expiration">Expiration Date</label>
+            <div class="cc-form-input" id="credit-card-card-expiration"></div>
+            <label class="cc-form-label" for="credit-card-card-cvv">CVV</label>
+            <div class="cc-form-input" id="credit-card-card-cvv"></div>
+            <div id="credit-card-submit"></div>
+        </div>
+    </form>
+
+    <!-- load the processor script, this attaches to the appropriate divs and provides the secure iframe fields -->
+    <script src="https://api2.heartlandportico.com/SecureSubmit.v1/token/gp-1.3.0/globalpayments.js"></script>
+    <script>
+        GlobalPayments.configure({
+            // put the public key for the merchant here (provided by RTS as needed)!
+            // this is a Development only key!
+            publicApiKey: "pkapi_cert_zk6iDnNXmzrZJAh0U4"
+        });
+
+        GlobalPayments.on("error", (error) => {
+            // add any custom error handling here for if the script throws an error event!
+            console.error(error);
+        });
+
+        // the placeholder values can be edited as needed
+        const cardForm = GlobalPayments.ui.form({
+            fields: {
+                "card-number": {
+                    placeholder: "**** **** **** ****",
+                    target: "#credit-card-card-number"
+                },
+                "card-expiration": {
+                    placeholder: "mm / yyyy",
+                    target: "#credit-card-card-expiration"
+                },
+                "card-cvv": {
+                    placeholder: "3 or 4 digits",
+                    target: "#credit-card-card-cvv"
+                },
+                "submit": {
+                    target: "#credit-card-submit",
+                    value: "Submit",
+                }
+            },
+            styles: {
+                // if you would like to add any custom styling to the iframe fields, you can do so here!
+                // example:
+                // "input, button": {
+                //    "background-color": "red"
+                // }
+            }
+        });
+
+        cardForm.ready(() => {
+            document.getElementById('payment-form').style.visibility = 'visible';
+            console.log("Registration of all credit card fields occurred");
+        });
+
+        cardForm.on("token-success", (resp) => {
+            // on a token-success event
+            // create a new input field for each piece of data
+            const token = document.createElement("input");
+            token.type = "text";
+            token.name = "paymentReference";
+            token.value = resp.paymentReference;
+
+            const maskedCard = document.createElement("input");
+            maskedCard.type = "text";
+            maskedCard.name = "maskedCard";
+            maskedCard.value = resp.details.cardNumber;
+
+            const cardLast4 = document.createElement("input");
+            cardLast4.type = "text";
+            cardLast4.name = "cardLast4";
+            cardLast4.value = resp.details.cardLast4;
+
+            const cardType = document.createElement("input");
+            cardType.type = "text";
+            cardType.name = "cardType";
+            cardType.value = resp.details.cardType;
+
+            // append the values from the processors response to the form
+            const form = document.getElementById("payment-form");
+            form.appendChild(token);
+            form.appendChild(maskedCard);
+            form.appendChild(cardLast4);
+            form.appendChild(cardType);
+
+            //submit the form to appropriate card token/data handling url (action on the form)
+            form.submit();
+        });
+
+        cardForm.on("token-error", (resp) => {
+            // add any custom error handling here for if the script throws a token error event!
+            console.log("Token Error: " + JSON.stringify(resp));
+
+            // for testing purposes this will display error!
+            alert('Secure Credit Card Fields Failed to Load - Error: ' + JSON.stringify(resp));
+        });
+    </script>
