@@ -122,12 +122,14 @@
     </form>
 
     <!-- load the processor script, this attaches to the appropriate divs and provides the secure iframe fields -->
-    <script src="https://api2.heartlandportico.com/SecureSubmit.v1/token/gp-1.3.0/globalpayments.js"></script>
+    <script src="js/globalpayments.js"></script>
     <script>
         GlobalPayments.configure({
             // put the public key for the merchant here (provided by RTS as needed)!
             // this is a Development only key!
-            publicApiKey: "pkapi_cert_zk6iDnNXmzrZJAh0U4"
+              publicApiKey: "pkapi_cert_zk6iDnNXmzrZJAh0U4"
+              //this is Liberty Hall's production key
+       // publicApiKey: "pkapi_prod_dUymg3h6Nc14tCo97v"
         });
 
         GlobalPayments.on("error", (error) => {
