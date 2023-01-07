@@ -47,6 +47,8 @@ namespace Services
            
 
             _logger.LogError("Response Status Code: " + response.StatusCode.ToString());
+            _logger.LogError("Response Error Message: " + response.ErrorMessage);
+            _logger.LogError("Response Error Exception: " + response.ErrorException);
 
             var dotNetXmlDeserializer = new DotNetXmlDeserializer(); //RestSharp.RestXmlRequest(); //   Deserializers.DotNetXmlDeserializer();
             dotNetXmlDeserializer.RootElement = "Response";

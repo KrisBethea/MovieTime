@@ -28,7 +28,17 @@ namespace MovieTime.Controllers
         [HttpPost]
         public ActionResult PostPayment()
         {
-            XDocument xDocument = XDocument.Parse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<note>\r\n  <to>Tove</to>\r\n  <from>Jani</from>\r\n  <heading>Reminder</heading>\r\n  <body>Don't forget me this weekend!</body>\r\n</note>");
+            XDocument xDocument = XDocument.Parse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
+                "" +
+                "@\"<Payment>\r\n\" + \"\\n\" +\r\n@\"    <Type>CreditCard</Type>\r\n\" + \"\\n\" " +                "+\r\n" +
+                "@\"    <SingleUseToken>supt_ycyDB65WX8B2TCWvaSOGIz4j</SingleUseToken>\r\n\" + \"\\n\" +\r\n" +
+                "@\"    <MaskedCardNumber>401200***0016</MaskedCardNumber>\r\n\" + \"\\n\" +\r\n" +
+                "@\"    <CardType>visa</CardType>\r\n\" + \"\\n\" +\r\n" +
+                "@\"    <CardLast4>0016</CardLast4>\r\n\" + \"\\n\" +\r\n" +
+                "@\"    <ChargeAmount>1.01</ChargeAmount>\r\n\" + \"\\n\" +\r\n" +
+                "@\"    <BillingStreet>6860 Dallas Pkwy</BillingStreet>\r\n\" + \"\\n\" +\r\n" +
+                "@\"    <BillingZip>75024</BillingZip>\r\n\" + \"\\n\" +\r\n" +
+                "@\"</Payment>\";");
 
             string xmlRequestBody = xDocument.ToString();
 
@@ -38,17 +48,17 @@ namespace MovieTime.Controllers
                 // Call asynchronous network methods in a try/catch block to handle exceptions
                 try
                 {
-                    HttpResponseMessage response =  client.PostAsync("your_external_url", new StringContent(xmlRequestBody, Encoding.UTF8, "text/xml")));
+                    //HttpResponseMessage response =  client.PostAsync("your_external_url", new StringContent(xmlRequestBody, Encoding.UTF8, "text/xml")));
 
-                    response.EnsureSuccessStatusCode();
+                    //response.EnsureSuccessStatusCode();
 
-                    // responseBody will contain the response XML document (hopefully!)
-                    string responseBody =  response.Content.ReadAsStringAsync();
+                    //// responseBody will contain the response XML document (hopefully!)
+                    //string responseBody =  response.Content.ReadAsStringAsync();
 
-                    // parse the string into an XDocument
-                    XDocument responseDocument = XDocument.Parse(responseBody);
+                    //// parse the string into an XDocument
+                    //XDocument responseDocument = XDocument.Parse(responseBody);
 
-                    Console.WriteLine(responseBody);
+                    //Console.WriteLine(responseBody);
                 }
                 catch (HttpRequestException e)
                 {
@@ -60,9 +70,9 @@ namespace MovieTime.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return Content("error " + ex.Message );
             }
         }
 
